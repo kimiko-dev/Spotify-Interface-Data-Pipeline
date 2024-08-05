@@ -12,7 +12,6 @@ export PYTHONPATH=/home/kimiko/spotify_interface_data_pipeline
 # run the Python profiling command using a here-doc
 python3 - <<EOF
 import cProfile
-import os
 import pstats
 
 from src.main.python.user_data_gen.data_utils_old import generate_user_data
