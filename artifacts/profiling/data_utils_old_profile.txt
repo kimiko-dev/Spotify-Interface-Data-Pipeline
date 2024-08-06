@@ -1,82 +1,133 @@
-Tue Aug  6 11:29:48 2024    /home/kimiko/spotify_interface_data_pipeline/artifacts/profiling/data_utils_old_profile.prof
+Tue Aug  6 13:25:23 2024    /home/kimiko/spotify_interface_data_pipeline/artifacts/profiling/data_utils_old_profile.prof
 
-         7389937 function calls (7379937 primitive calls) in 9.803 seconds
+         11120140 function calls (11109816 primitive calls) in 12.179 seconds
 
    Ordered by: cumulative time
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.000    0.000    9.803    9.803 {built-in method builtins.exec}
-        1    0.006    0.006    9.803    9.803 <string>:1(<module>)
-        1    0.279    0.279    9.797    9.797 data_utils_old.py:57(generate_user_data)
-   134940    0.186    0.000    5.816    0.000 __init__.py:535(random_element)
-   134940    2.587    0.000    5.630    0.000 __init__.py:412(random_elements)
-   290000    0.432    0.000    5.305    0.000 {method 'sub' of 're.Pattern' objects}
-    30000    0.024    0.000    4.146    0.000 generator.py:161(parse)
-    49974    0.138    0.000    3.973    0.000 generator.py:177(__format_token)
-    20000    0.030    0.000    3.767    0.000 decorators.py:26(wrapper)
-    49974    0.071    0.000    3.752    0.000 generator.py:84(format)
-    20000    0.056    0.000    3.610    0.000 __init__.py:281(user_name)
-    29889    0.020    0.000    3.074    0.000 __init__.py:211(last_name)
-   134940    0.821    0.000    2.901    0.000 distribution.py:57(choices_distribution)
-    30085    0.020    0.000    2.217    0.000 __init__.py:208(first_name)
-20000/10000    0.024    0.000    1.981    0.000 decorators.py:34(wrapper)
-    10000    0.023    0.000    1.966    0.000 __init__.py:227(email)
-    59974    1.700    0.000    1.796    0.000 random.py:454(choices)
-    10000    0.012    0.000    1.242    0.000 __init__.py:48(street_name)
-    40000    0.118    0.000    1.179    0.000 __init__.py:607(numerify)
-   294284    0.142    0.000    0.954    0.000 random.py:332(randint)
-   294284    0.313    0.000    0.812    0.000 random.py:291(randrange)
-    10000    0.013    0.000    0.803    0.000 __init__.py:323(phone_number)
-   154284    0.128    0.000    0.754    0.000 __init__.py:626(<lambda>)
-   154284    0.110    0.000    0.625    0.000 __init__.py:320(random_digit)
-   399250    0.333    0.000    0.525    0.000 random.py:242(_randbelow_with_getrandbits)
-   240000    0.378    0.000    0.378    0.000 proxy.py:107(__getattribute__)
-    10000    0.013    0.000    0.374    0.000 __init__.py:35(building_number)
-    59974    0.087    0.000    0.343    0.000 {method 'join' of 'str' objects}
-    10000    0.021    0.000    0.304    0.000 data_utils_old.py:34(generate_mac_address)
-   104966    0.106    0.000    0.292    0.000 random.py:341(choice)
-    20000    0.031    0.000    0.280    0.000 __init__.py:644(bothify)
-    80000    0.105    0.000    0.279    0.000 proxy.py:122(__getattr__)
-    70000    0.062    0.000    0.256    0.000 data_utils_old.py:36(<genexpr>)
-    20000    0.048    0.000    0.222    0.000 uuid.py:723(uuid4)
-    10000    0.024    0.000    0.137    0.000 data_utils_old.py:24(generate_ip_address)
-    20000    0.102    0.000    0.134    0.000 uuid.py:139(__init__)
-    20000    0.047    0.000    0.127    0.000 text.py:11(slugify)
-    20000    0.021    0.000    0.124    0.000 __init__.py:220(_to_ascii)
-   882852    0.122    0.000    0.122    0.000 {built-in method _operator.index}
-   549828    0.108    0.000    0.108    0.000 {built-in method builtins.len}
-    20000    0.072    0.000    0.103    0.000 __init__.py:4(unidecode)
-   636665    0.102    0.000    0.102    0.000 {method 'getrandbits' of '_random.Random' objects}
-    20000    0.017    0.000    0.099    0.000 __init__.py:628(<lambda>)
-   399250    0.090    0.000    0.090    0.000 {method 'bit_length' of 'int' objects}
-    10000    0.007    0.000    0.083    0.000 __init__.py:29(street_suffix)
-   349854    0.083    0.000    0.083    0.000 {built-in method builtins.isinstance}
+        1    0.000    0.000   12.179   12.179 {built-in method builtins.exec}
+        1    0.006    0.006   12.179   12.179 <string>:1(<module>)
+        1    0.339    0.339   12.173   12.173 data_utils_old.py:40(generate_user_data)
+   135042    0.195    0.000    5.822    0.000 __init__.py:535(random_element)
+   135042    2.583    0.000    5.627    0.000 __init__.py:412(random_elements)
+   290000    0.437    0.000    5.320    0.000 {method 'sub' of 're.Pattern' objects}
+    30000    0.029    0.000    4.158    0.000 generator.py:161(parse)
+    50033    0.140    0.000    3.978    0.000 generator.py:177(__format_token)
+    20000    0.031    0.000    3.787    0.000 decorators.py:26(wrapper)
+    50033    0.075    0.000    3.753    0.000 generator.py:84(format)
+    20000    0.057    0.000    3.624    0.000 __init__.py:281(user_name)
+    30086    0.022    0.000    3.068    0.000 __init__.py:211(last_name)
+   145042    0.829    0.000    3.051    0.000 distribution.py:57(choices_distribution)
+    29947    0.021    0.000    2.223    0.000 __init__.py:208(first_name)
+20000/10000    0.025    0.000    1.984    0.000 decorators.py:34(wrapper)
+    10000    0.023    0.000    1.970    0.000 __init__.py:227(email)
+    70033    1.814    0.000    1.925    0.000 random.py:454(choices)
+    10000    0.024    0.000    1.920    0.000 __init__.py:613(ipv4)
+    10000    0.357    0.000    1.532    0.000 __init__.py:508(_random_ipv4_address_from_subnets)
+    10000    0.013    0.000    1.253    0.000 __init__.py:48(street_name)
+    40000    0.118    0.000    1.186    0.000 __init__.py:607(numerify)
+   263964    0.138    0.000    0.911    0.000 random.py:332(randint)
+    10000    0.202    0.000    0.834    0.000 {built-in method builtins.all}
+    10000    0.013    0.000    0.805    0.000 __init__.py:323(phone_number)
+   273964    0.319    0.000    0.802    0.000 random.py:291(randrange)
+   153964    0.130    0.000    0.759    0.000 __init__.py:626(<lambda>)
+  1410000    0.404    0.000    0.632    0.000 __init__.py:531(<genexpr>)
+   153964    0.111    0.000    0.629    0.000 __init__.py:320(random_digit)
+   378973    0.322    0.000    0.510    0.000 random.py:242(_randbelow_with_getrandbits)
+   330000    0.506    0.000    0.506    0.000 proxy.py:107(__getattribute__)
+   110000    0.146    0.000    0.385    0.000 proxy.py:122(__getattr__)
+    10000    0.013    0.000    0.373    0.000 __init__.py:35(building_number)
+    10000    0.041    0.000    0.364    0.000 __init__.py:406(_get_all_networks_and_weights)
+    10000    0.068    0.000    0.340    0.000 __init__.py:665(mac_address)
+  1828058    0.331    0.000    0.331    0.000 {built-in method builtins.isinstance}
+   105009    0.106    0.000    0.291    0.000 random.py:341(choice)
+    20000    0.031    0.000    0.285    0.000 __init__.py:644(bothify)
+    10322    0.051    0.000    0.276    0.000 ipaddress.py:1502(__init__)
+    10000    0.043    0.000    0.266    0.000 __init__.py:657(ipv6)
+    20000    0.054    0.000    0.233    0.000 uuid.py:723(uuid4)
+    21714    0.029    0.000    0.210    0.000 ipaddress.py:609(__str__)
+    20995    0.031    0.000    0.187    0.000 ipaddress.py:1286(__init__)
+    10000    0.015    0.000    0.161    0.000 ipaddress.py:1960(__str__)
+    81747    0.122    0.000    0.150    0.000 {method 'join' of 'str' objects}
+    10014    0.026    0.000    0.145    0.000 ipaddress.py:1187(_ip_int_from_string)
+   710556    0.141    0.000    0.141    0.000 {built-in method builtins.len}
+    20000    0.103    0.000    0.138    0.000 uuid.py:139(__init__)
+    10000    0.104    0.000    0.132    0.000 ipaddress.py:1829(_string_from_ip_int)
+    20000    0.050    0.000    0.131    0.000 text.py:11(slugify)
+    20000    0.021    0.000    0.122    0.000 __init__.py:220(_to_ascii)
+    30014    0.037    0.000    0.121    0.000 {built-in method from_bytes}
+   821892    0.118    0.000    0.118    0.000 {built-in method _operator.index}
+    20000    0.070    0.000    0.101    0.000 __init__.py:4(unidecode)
+   617335    0.101    0.000    0.101    0.000 {method 'getrandbits' of '_random.Random' objects}
+    20000    0.018    0.000    0.099    0.000 __init__.py:628(<lambda>)
+   378973    0.087    0.000    0.087    0.000 {method 'bit_length' of 'int' objects}
+    10000    0.007    0.000    0.086    0.000 __init__.py:29(street_suffix)
+   225074    0.085    0.000    0.085    0.000 {built-in method builtins.hasattr}
+    40056    0.058    0.000    0.084    0.000 ipaddress.py:1213(_parse_octet)
     10000    0.007    0.000    0.083    0.000 __init__.py:238(safe_domain_name)
-    20000    0.015    0.000    0.082    0.000 __init__.py:330(random_digit_above_two)
-    20000    0.013    0.000    0.076    0.000 __init__.py:633(lexify)
-   194914    0.069    0.000    0.069    0.000 {built-in method builtins.hasattr}
-    10000    0.021    0.000    0.065    0.000 __init__.py:526(postcode)
-   129974    0.061    0.000    0.061    0.000 {built-in method builtins.getattr}
-    49974    0.019    0.000    0.055    0.000 generator.py:90(get_formatter)
-    20000    0.050    0.000    0.050    0.000 uuid.py:280(__str__)
-     4966    0.003    0.000    0.047    0.000 __init__.py:642(<lambda>)
-   319224    0.047    0.000    0.047    0.000 generator.py:60(random)
-    10000    0.009    0.000    0.041    0.000 data_utils_old.py:41(generate_system_triplet)
-    20000    0.040    0.000    0.040    0.000 {built-in method posix.urandom}
-    59974    0.039    0.000    0.039    0.000 {built-in method _bisect.bisect_right}
-   206518    0.031    0.000    0.031    0.000 {built-in method builtins.ord}
-    59974    0.023    0.000    0.023    0.000 {method 'values' of 'collections.OrderedDict' objects}
-    49974    0.023    0.000    0.023    0.000 {method 'groups' of 're.Match' objects}
-    60000    0.021    0.000    0.021    0.000 {method 'lower' of 'str' objects}
-    59974    0.017    0.000    0.017    0.000 {method 'random' of '_random.Random' objects}
-    59974    0.016    0.000    0.016    0.000 {built-in method math.isfinite}
-    20000    0.012    0.000    0.012    0.000 {method 'count' of 'list' objects}
-    20000    0.008    0.000    0.008    0.000 {built-in method from_bytes}
+    20000    0.014    0.000    0.081    0.000 __init__.py:330(random_digit_above_two)
+    20000    0.014    0.000    0.077    0.000 __init__.py:633(lexify)
+   180031    0.076    0.000    0.076    0.000 {built-in method builtins.getattr}
+    10000    0.020    0.000    0.065    0.000 __init__.py:526(postcode)
+   409006    0.060    0.000    0.060    0.000 generator.py:60(random)
+    50033    0.024    0.000    0.059    0.000 generator.py:90(get_formatter)
+    11714    0.018    0.000    0.050    0.000 ipaddress.py:1249(_string_from_ip_int)
+     5009    0.004    0.000    0.047    0.000 __init__.py:642(<lambda>)
+    20000    0.047    0.000    0.047    0.000 uuid.py:280(__str__)
+    10322    0.017    0.000    0.046    0.000 ipaddress.py:533(_split_addr_prefix)
+    10000    0.027    0.000    0.045    0.000 ipaddress.py:703(__getitem__)
+    70033    0.045    0.000    0.045    0.000 {built-in method _bisect.bisect_right}
+    10000    0.011    0.000    0.042    0.000 data_utils_old.py:24(generate_system_triplet)
+    20000    0.041    0.000    0.041    0.000 {built-in method posix.urandom}
+   207242    0.031    0.000    0.031    0.000 {built-in method builtins.ord}
+    70000    0.028    0.000    0.028    0.000 __init__.py:677(<genexpr>)
+    60033    0.028    0.000    0.028    0.000 {method 'values' of 'collections.OrderedDict' objects}
+        1    0.000    0.000    0.028    0.028 __init__.py:562(_exclude_ipv4_networks)
+      865    0.002    0.000    0.027    0.000 __init__.py:576(_exclude_ipv4_network)
+    10140    0.022    0.000    0.026    0.000 ipaddress.py:779(num_addresses)
+    50033    0.023    0.000    0.023    0.000 {method 'groups' of 're.Match' objects}
+    60000    0.022    0.000    0.022    0.000 {method 'lower' of 'str' objects}
+     1019    0.003    0.000    0.022    0.000 ipaddress.py:796(address_exclude)
+    10014    0.012    0.000    0.021    0.000 ipaddress.py:156(_split_optional_netmask)
+    70033    0.020    0.000    0.020    0.000 {method 'random' of '_random.Random' objects}
+    10000    0.020    0.000    0.020    0.000 ipaddress.py:1781(_compress_hextets)
+    70033    0.019    0.000    0.019    0.000 {built-in method math.isfinite}
+    20000    0.015    0.000    0.015    0.000 {method 'count' of 'list' objects}
+    10000    0.009    0.000    0.015    0.000 ipaddress.py:1920(__init__)
+    20028    0.012    0.000    0.012    0.000 {method 'split' of 'str' objects}
+    40057    0.010    0.000    0.010    0.000 {method 'isdigit' of 'str' objects}
+    62488    0.010    0.000    0.010    0.000 ipaddress.py:574(__int__)
+    40057    0.010    0.000    0.010    0.000 {method 'isascii' of 'str' objects}
+    20981    0.009    0.000    0.009    0.000 ipaddress.py:415(_check_int_address)
     20000    0.008    0.000    0.008    0.000 {built-in method unicodedata.normalize}
+     1700    0.002    0.000    0.008    0.000 ipaddress.py:682(__str__)
+    11714    0.008    0.000    0.008    0.000 {method 'to_bytes' of 'int' objects}
+    20000    0.008    0.000    0.008    0.000 {method 'keys' of 'dict' objects}
+     1061    0.000    0.000    0.007    0.000 ipaddress.py:1047(subnet_of)
     20000    0.007    0.000    0.007    0.000 {method 'strip' of 'str' objects}
+     1061    0.001    0.000    0.007    0.000 ipaddress.py:1035(_is_subnet_of)
+    10000    0.005    0.000    0.005    0.000 {method 'insert' of 'list' objects}
+    10322    0.005    0.000    0.005    0.000 ipaddress.py:1161(_make_netmask)
     10000    0.004    0.000    0.004    0.000 {method 'append' of 'list' objects}
-    10000    0.004    0.000    0.004    0.000 {method 'keys' of 'dict' objects}
+      850    0.001    0.000    0.004    0.000 ipaddress.py:751(overlaps)
+  648/324    0.001    0.000    0.003    0.000 functools.py:979(__get__)
+      462    0.001    0.000    0.003    0.000 ipaddress.py:929(subnets)
+     3400    0.002    0.000    0.002    0.000 ipaddress.py:739(__contains__)
+      324    0.001    0.000    0.002    0.000 ipaddress.py:758(broadcast_address)
+     1061    0.001    0.000    0.002    0.000 functools.py:96(_le_from_lt)
+     1998    0.001    0.000    0.001    0.000 ipaddress.py:584(__lt__)
+      937    0.001    0.000    0.001    0.000 functools.py:103(_ge_from_lt)
+      324    0.000    0.000    0.001    0.000 ipaddress.py:763(hostmask)
+      335    0.000    0.000    0.000    0.000 ipaddress.py:728(__eq__)
+     1730    0.000    0.000    0.000    0.000 ipaddress.py:792(prefixlen)
+      648    0.000    0.000    0.000    0.000 {method 'get' of 'dict' objects}
+      496    0.000    0.000    0.000    0.000 ipaddress.py:577(__eq__)
         1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}
+       25    0.000    0.000    0.000    0.000 ipaddress.py:431(_ip_int_from_prefix)
+        1    0.000    0.000    0.000    0.000 {method 'sort' of 'list' objects}
+       16    0.000    0.000    0.000    0.000 __init__.py:573(<lambda>)
+        2    0.000    0.000    0.000    0.000 {built-in method builtins.setattr}
+        1    0.000    0.000    0.000    0.000 ipaddress.py:474(_prefix_from_prefix_string)
         2    0.000    0.000    0.000    0.000 {method 'keys' of 'collections.OrderedDict' objects}
 
 
