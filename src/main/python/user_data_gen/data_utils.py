@@ -22,23 +22,6 @@ COUNTRY_CITY_MAP = {
 }
 
 
-def generate_ip_address():
-    """Generates and returns a random ip address"""
-    return (
-        f"{random.randint(1, 255)}."
-        f"{random.randint(1, 255)}."
-        f"{random.randint(1, 255)}."
-        f"{random.randint(1, 255)}"
-    )
-
-
-def generate_mac_address():
-    """Generates and returns a random MAC address"""
-    return ':'.join(
-        f'{random.randint(0, 255):02X}' for _ in range(6)
-    )
-
-
 def generate_system_triplet():
     """Generates and returns a random system triplet"""
     return random.choice([
@@ -92,8 +75,9 @@ def generate_user_data_chunk(start_index, end_index):
             'email_address': fake.email(),
             'phone_number': fake.phone_number(),
             'device': {
-                'ip_address': generate_ip_address(),
-                'mac_address': generate_mac_address(),
+                'ipv4_address': fake.ipv4(),
+                'ipv6_address': fake.ipv6(),
+                'mac_address': fake.mac_address(),
                 'UUID': str(uuid.uuid4()),
                 'system_triplet': generate_system_triplet()
             }
