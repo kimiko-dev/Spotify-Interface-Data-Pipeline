@@ -53,9 +53,12 @@ def generate_user_data_chunk(start_index, end_index):
     # init empty list to be insterted into
     user_data_chunk = []
 
+    # precompute list of countries
+    countries = list(COUNTRY_CITY_MAP.keys())
+
     for i in range(start_index, end_index):
         # generates random country city
-        country = random.choice(list(COUNTRY_CITY_MAP.keys()))
+        country = random.choice(countries)
         city = random.choice(COUNTRY_CITY_MAP[country])
 
         # adding random entries to dictionary
