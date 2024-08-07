@@ -37,11 +37,11 @@ def profile_function(num_users):
         stats = pstats.Stats('${PROFILE_FILE}', stream=f)
         stats.strip_dirs().sort_stats('cumulative').print_stats()
 
+        print("Profiling complete. Output saved to ${TEXT_FILE}.")
+
 if __name__ == '__main__':
     profile_function($NUM_USERS)
 EOF
 
 # removing .prof file.
 rm -f "$PROFILE_FILE"
-
-echo "Profiling complete. Output saved to $TEXT_FILE."
