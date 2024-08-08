@@ -21,7 +21,7 @@
 
 <ins>__Overview__</ins> :
 
-I will be generating a __JSON__ file cointaining random user data, this will be utilised in the source payload. I will performing unit and functional testing on the scripts, as well as profiling and analysing the profiles to understand how to improve the speed of execution.
+I will be generating a __JSON__ file containing random user data, this will be utilised in the source payload. I will performing unit and functional testing on the scripts, as well as profiling and analysing the profiles to understand how to improve the speed of execution.
 
 ### 2.1 Generating Random Data
 ------------------------------
@@ -194,3 +194,33 @@ path\to\data_utils\profiling.sh old
 ```
 
 Notice the added `old` at the end of the command (remember that we defined this parameter to be passed into the shell script so we can import the older implementation of the data_utils module).
+
+After receiving a message in the terminal saying the profiling has been complete, we are free to open and analyse the [`.txt` file](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/artifacts/profiling/user_data_gen/data_utils/2024-08-07_15-16-52-data_utils_old_profile.txt) generated.
+
+- We can see that the total time taken for this function generate a list of 10,000 user data points is 12.154 seconds, which seems a bit slow.
+
+- The number of function calls is 11119220
+
+Let us take a deeper look into what function calls are the most time consuming, but first let me outline the key metrics:
+
+1. `ncalls`: Number of calls to the function. 
+2. `tottime`: Total time spent in the function (excluding sub-functions).
+3. `percall`: Average time per call, calculated as `tottime / ncalls`.
+4. `cumtime`: Cumulative time spent in the function AND its sub-functions.
+5. `percall` (`cumtime`):  Average time per call including sub-functions calculated as `cumtime / ncalls`.
+
+After establishing what these metrics mean, we seek functions with high `ncalls`, `tottime` and `cumtime`!
+
+We can see:
+
+- `generate_user_data` has the highest `tottime` and `cumtime`, but this is obviously to be expected since this is the function we are profiling!
+
+- `random_element` and `random_elements` are frequently called and have high `cumtime`s. But this cannot be avoided due to the use of these in `Faker`, we can see it in the source code [here](https://github.com/joke2k/faker/blob/master/faker/providers/phone_number/__init__.py#L324).
+
+- `{method 'sub' of 're.Pattern' objects}` also has a high `cumtime`, which points to a heavy use of regex. Again, we cannot really avoid this since it is used in `Faker` to validate the data it produces, we can see it [here](https://github.com/joke2k/faker/blob/master/faker/providers/__init__.py#L627)
+
+This isn't really helpful for us since we cannot change any of the functions with the highest `cumtime` and `tottime` to optimise the process. However, employing `multiprocessing` to delegate tasks to different cores of my CPU may be the best bet in speed up the generation of the list of dictionaries containing random user data!
+
+### 2.1.4 Optimising `data_utils.py`
+------------------------------------
+
