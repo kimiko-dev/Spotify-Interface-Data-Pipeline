@@ -12,7 +12,7 @@
 
     - 2.1.2 [Creating a Bash Script to Profile `data_utils.py`](#212-creating-a-bash-script-to-profile-data_utilspy)
 
-    - 2.1.3 [Profiling the Old Implementation](#213-profiling-the-old-implementation)
+    - 2.1.3 [Profiling and Analysing the Old Implementation](#213-profiling-and-analysing-the-old-implementation)
 
 ## 1. Introduction
 
@@ -184,4 +184,13 @@ rm -f "$PROFILE_FILE"
 
 Finally, this line is provided to remove the `.prof` file since we don't need it anymore.
 
-### 2.1.3 Profiling the Old Implementation
+### 2.1.3 Profiling and Analysing the Old Implementation
+--------------------------------------------------------
+
+To generate a profile for the [old implementation](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/src/main/python/user_data_gen/data_utils_old.py), we simply run:
+
+```
+path\to\data_utils\profiling.sh old
+```
+
+Notice the added `old` at the end of the command (remember that we defined this parameter to be passed into the shell script so we can import the older implementation of the data_utils module).
