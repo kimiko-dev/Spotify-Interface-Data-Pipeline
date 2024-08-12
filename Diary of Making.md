@@ -219,8 +219,104 @@ We can see:
 
 - `{method 'sub' of 're.Pattern' objects}` also has a high `cumtime`, which points to a heavy use of regex. Again, we cannot really avoid this since it is used in `Faker` to validate the data it produces, we can see it [here](https://github.com/joke2k/faker/blob/master/faker/providers/__init__.py#L627)
 
-This isn't really helpful for us since we cannot change any of the functions with the highest `cumtime` and `tottime` to optimise the process. However, employing `multiprocessing` to delegate tasks to different cores of my CPU may be the best bet in speed up the generation of the list of dictionaries containing random user data!
+This isn't really helpful for us since we cannot change any of the functions with the highest `cumtime` and `tottime` to optimise the process. However, employing `multiprocessing` to delegate tasks to different cores of the CPU may be the best bet in speed up the generation of the list of dictionaries containing random user data!
 
 ### 2.1.4 Optimising `data_utils.py`
 ------------------------------------
 
+To implement `multiprocessing`, we need to refactor the old `generate_user_data` function into 2 parts. These are:
+
+- Creating data chunks.
+- Processing chunks in parallel.
+
+Let us take a deeper look at both:
+
+1. <ins>__Creating data chunks__</ins>
+
+This step involves generating chunks of random data. It is similar to the [`generate_user_data`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/src/main/python/user_data_gen/data_utils_old.py#L40) in [`data_utils_old.py`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/src/main/python/user_data_gen/data_utils_old.py), the function is renamed to `generate_user_data_chunk`. One change here is that we generate the list of the countries (using keys from the `COUNTRY_CITY_MAP`) outside of the `for` loop, since we don't want to remake the list for each pass of the loop as this will slow the execution of the script down a bit. The function returns a chunk of random user data. The other main change we implement is by passing `start_index` and `end_index` into the function, this tells the cpu cores which range it should start and end from when generating data chunks - you will understand this more in:
+
+2. <ins>__Processing chunks in parallel__</ins>
+
+In this step, we generate the complete list of random user data - which is why we call the function `generate_user_data`. I will now proceed to break down the logic of this function:
+
+```
+num_workers = cpu_count()
+chunk_size = num_users // num_workers
+```
+We find the number of workers we wish to make by using the `cpu_count()` function, which counts the number of cpu cores there are across the system. This step is neccesary since we wish you assign a worker to each of the available cores, to generate the chunks in parallel.
+
+The `chunk_size` is used to tell the workers how many points of data they need to produce on each cpu core. We use `//` here since we require floor division to ensure an integer number is used for the range.
+
+---
+```
+ranges = [(i * chunk_size, (i + 1) * chunk_size) for i in range(num_workers)]
+ranges[-1] = (ranges[-1][0], num_users)
+```
+We then generate a list of tuples, using a list comprehension, to find the indices the workers should start and end from. The tuples in the list are of the form `(start_index, end_index)`. We simply cannot iterate over `range(chunk_size)` because the chunk size may not evenly divide the total number of random data points we wish to generate. Instead, we ensure that each worker processes a distinct portion of data.
+
+The second line here ensures that last tuple in the list has an `end_index` of `num_users`. This is done since, as mentioned above, the total number of data points may not perfectly align with the chunk size. Let me show you an example where this could go wrong.
+
+Suppose:
+
+* `num_users = 102` (which is not evenly divisible by `num_workers`)
+* `num_workers = 4`
+
+In this case:
+
+$$
+\left\lfloor \frac{102}{4} \right\rfloor = 25
+$$
+
+Notice:
+
+$$
+25 \cdot 4 = 100 \neq 102
+$$
+
+Without the second line of code, the `ranges` would be:
+
+$$
+\text{ranges} = [(0, 25), (25, 50), (50, 75), (75, 100)]
+$$
+
+This results in only 100 data points being generated, but we need to generate 102 data points. By adjusting the last tuple to:
+
+$$
+(75, 102)
+$$
+
+We ensure that all 102 data points are generated!
+
+Hopefully the above example makes it clear that if `num_workers` does not evenly divide `num_users`,  the second line ensures that the last chunk covers all remaining data points. Without this, you might generate fewer data points than intended.
+
+---
+```
+with Pool(num_workers) as pool:
+    results = pool.starmap(generate_user_data_chunk, ranges)
+```
+
+We use a context manager along side the `Pool` class used for `mulitiprocessing`, which creates a pool of workers, where `num_workers` specifies the number of worker processes to create. 
+
+On the following line, `pool.starmap` is a method of the `Pool` object that maps a function (that we wish to parallelise) to a list of argument of tuples. So we wish to use the function `generate_user_data_chunk` on the list of tuples `ranges`.
+
+It is important to note that `ranges` is a list of lists, the number of lists in `ranges` coincides with the number of workers there are (which is equal to the number of cores).
+
+---
+```
+user_data = [item for sublist in results for item in sublist]
+```
+
+Here, we have a list comprehension to flatten the list of lists, i.e. combine all entries of each nested list into one list. We wish to do this since we have a number of lists equal to the number of cpu cores, and we wish to combine all of these lists into one list.
+
+A more explicit, long form version would be as follows:
+```
+user_data = []
+
+for sublist in results:
+    for item in sublist:
+        user_data.append(item)
+```
+
+---
+
+Finally we `return user_data`, which is a list of dictionaries, ready to be sent to a JSON file.
