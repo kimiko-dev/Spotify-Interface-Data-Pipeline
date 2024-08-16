@@ -1,5 +1,4 @@
 import logging
-from multiprocessing import Pool, cpu_count
 import unittest
 from unittest.mock import patch, MagicMock
 
