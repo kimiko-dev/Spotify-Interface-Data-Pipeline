@@ -16,7 +16,9 @@
 
     - 2.1.4 [Optimising `data_utils.py`](#214-optimising-data_utilspy)
 
-    - 2.1.5 [2.1.5 Profiling and Analysing `data_utils.py`](#215-profiling-and-analysing-data_utilspy)
+    - 2.1.5 [Profiling and Analysing `data_utils.py`](#215-profiling-and-analysing-data_utilspy)
+
+    - 2.1.6 [Unit Testing `data_utils.py`](#216-unit-testing-data_utilspy)
 
 ## 1. Introduction
 
@@ -362,3 +364,36 @@ The main observations we can see from the profiling file are:
 - `pool.py:_maintain_pool `and related functions are used heavily, which indicates that parallel processing is heavily utilised, which is what we want to see since we implemented this.
 
 - `selectors.py:402(select)` and `select.poll` objects also have a high `cumtime` since the function is spending a lot of time waiting on I/O operations, likely due to being I/O-bound. (This means the performance is limited by the time spent on I/O operations, such as reading from or writing to files)
+
+### 2.1.6 Unit Testing `data_utils.py`
+--------------------------------------
+
+Unit tests are an essential part of a code's lifecycle. They are used to validate that individual pieces of code function as expected. By running predefined tests, unit tests help ensure that any future changes to the code do not introduce new bugs or break existing functionality.
+
+I will now walk you through the script for unit testing, which can be found [here](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py).
+
+[Line 4](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L4) is an important one. Here, we import the functions from the script we wish we to test. In this case, we are testing `generate_system_triplet`, `generate_user_data_chunk`, and `generate_user_data` from, you guessed it, `data_utils.py`!
+
+[Lines 8 and 9](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L8-L9) is used to configure and set up the logging system by creating a logging instance. This will be used to generate timestamped log messages at different levels, such as `INFO`, `ERROR` and `DEBUG`, to provide detailed insights into the testing process.
+
+Now we will be creating a [class](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L11) to customise the test results to out liking, with the class being called `CustomTestResult`. This class will inherit from `unittest.TextTestResult`, allowing us to modify the behavior of the `TextTestResult` class provided by the `unittest` module.
+
+First off, we define the [`startTest`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L13-L16) method, which takes in `test` as an input. Here, `test` refers to all functions we define in our test class, which begin with `test_`. The first line is necessary since we wish to inherit the functionality from `unittest`'s `startTest`. This inheritance is denoted by the `super().` at the start! Now, we use the method `stream.write(...)` to change the output of `startTest`. Specifically, we write a seperator line to `STDOUT`, which is a line of `---` to visually separate the tests performed as this increases readability for me. Finally, we use the method `stream.flush()` to ensure that any buffered data in the stream is written out immediately, this ensures that the output is up to date and visible without any delay.
+
+Now we define the [`stopTest`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L18-L20) method, again taking in `test` as an input, which was explained above. Similar to above, we wish to inherit the functionality from `unittest`'s `stopTest`. There is no need for `stream.write()` here since we have already used a line seperator for `startTest`. Finally, we end the method with `stream.flush()`.
+
+The [next three methods](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L22-L29) all serve similar functionality - they tell us information on the outcome of the test. We will be utilising `logger` for all of them, specifically `logger.info` for `addSuccess` - telling the user that the test was passed, alongside the test that was completed. And for the last two, `logger.error` is used to signify there is an error. I added a greater level of detail to these outputs by passing `{self._exc_info_to_string(err, test)}` to the `f` string inside `logger.error`', since this will convert the error into a readable format.
+
+We then define the class [`CustomTestRunner`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L31), which inherits the `TextTestRunner` method for the `unittest` module. This will be used to override specific methods of `TextTestRunner` to implement the customised behaviour outlined above.
+
+Starting off, we define the [`__init__`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L32-L3) method inside the class, which simply inherts `__init__` from `unittest.TextTestRunner`. We need to do this to initialise the class. By calling the superclass's `__init__` method, we ensure that the `CustomTestRunner` class is properly set up with the default initialisation behavior provided by `TextTestRunner`, allowing us to add or modify functionality as needed.
+
+Up next is overriding the [`_makeResult`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L35-L36) method. This method is intended to create and return a custom result class, in our case it is `CustomTestResult`, as in this class we have customised outputs for. To put it simply, this method is used to run tests with the customised result handling. The `return` of this method contains `CustomTestResult` with the following parameters:
+
+- `self.stream`: The output stream where results are written (e.g., standard output).
+- `self.descriptions`: A boolean that indicates whether to include test descriptions in the output.
+- `self.verbosity`: An integer that controls the level of detail in the output.
+
+In summary, overriding _makeResult ensures that our custom result class is used to handle and format the test results.
+
+We will now be looking at the main class that is used for testing purposes, this is the [`TestDataUtils`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L38) class.
