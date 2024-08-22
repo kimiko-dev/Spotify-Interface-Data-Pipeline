@@ -107,6 +107,13 @@ class TestDataUtils(unittest.TestCase):
             self.assertIn('email_address', data)
             self.assertIn('phone_number', data)
             self.assertIn('device', data)
+            self.assertIsInstance(data['user_id'], str)
+            self.assertIsInstance(data['user_name'], str)
+            self.assertIsInstance(data['first_name'], str)
+            self.assertIsInstance(data['last_name'], str)
+            self.assertIsInstance(data['age'], int)
+            self.assertIsInstance(data['email_address'], str)
+            self.assertIsInstance(data['phone_number'], str)
 
             # validating `address` dictionary
             address = data['address']
@@ -139,14 +146,6 @@ class TestDataUtils(unittest.TestCase):
             self.assertIsInstance(device['UUID'], str)
             self.assertIsInstance(device['system_triplet'], str)
 
-            # validating types
-            self.assertIsInstance(data['user_id'], str)
-            self.assertIsInstance(data['user_name'], str)
-            self.assertIsInstance(data['first_name'], str)
-            self.assertIsInstance(data['last_name'], str)
-            self.assertIsInstance(data['age'], int)
-            self.assertIsInstance(data['email_address'], str)
-            self.assertIsInstance(data['phone_number'], str)
 
     @patch('src.main.python.user_data_gen.data_utils.Pool')
     @patch('src.main.python.user_data_gen.data_utils.cpu_count', return_value=3)
