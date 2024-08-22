@@ -368,13 +368,19 @@ The main observations we can see from the profiling file are:
 ### 2.1.6 Unit Testing `data_utils.py`
 --------------------------------------
 
-Unit tests are an essential part of a code's lifecycle. They are used to validate that individual pieces of code function as expected. By running predefined tests, unit tests help ensure that any future changes to the code do not introduce new bugs or break existing functionality.
+Unit tests are an essential part of a script's lifecycle. They are used to validate that individual pieces of code function as expected. By running predefined tests, unit tests help ensure that any future changes to the code do not introduce new bugs or break existing functionality.
 
 I will now walk you through the script for unit testing, which can be found [here](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py).
 
+---
+
 [Line 4](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L4) is an important one. Here, we import the functions from the script we wish we to test. In this case, we are testing `generate_system_triplet`, `generate_user_data_chunk`, and `generate_user_data` from, you guessed it, `data_utils.py`!
 
+---
+
 [Lines 8 and 9](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L8-L9) is used to configure and set up the logging system by creating a logging instance. This will be used to generate timestamped log messages at different levels, such as `INFO`, `ERROR` and `DEBUG`, to provide detailed insights into the testing process.
+
+---
 
 Now we will be creating a [class](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L11) to customise the test results to out liking, with the class being called `CustomTestResult`. This class will inherit from `unittest.TextTestResult`, allowing us to modify the behavior of the `TextTestResult` class provided by the `unittest` module.
 
@@ -383,6 +389,8 @@ First off, we define the [`startTest`](https://github.com/kimiko-dev/Spotify-Int
 Now we define the [`stopTest`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L18-L20) method, again taking in `test` as an input, which was explained above. Similar to above, we wish to inherit the functionality from `unittest`'s `stopTest`. There is no need for `stream.write()` here since we have already used a line seperator for `startTest`. Finally, we end the method with `stream.flush()`.
 
 The [next three methods](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L22-L29) all serve similar functionality - they tell us information on the outcome of the test. We will be utilising `logger` for all of them, specifically `logger.info` for `addSuccess` - telling the user that the test was passed, alongside the test that was completed. And for the last two, `logger.error` is used to signify there is an error. I added a greater level of detail to these outputs by passing `{self._exc_info_to_string(err, test)}` to the `f` string inside `logger.error`', since this will convert the error into a readable format.
+
+---
 
 We then define the class [`CustomTestRunner`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L31), which inherits the `TextTestRunner` method for the `unittest` module. This will be used to override specific methods of `TextTestRunner` to implement the customised behaviour outlined above.
 
@@ -394,6 +402,153 @@ Up next is overriding the [`_makeResult`](https://github.com/kimiko-dev/Spotify-
 - `self.descriptions`: A boolean that indicates whether to include test descriptions in the output.
 - `self.verbosity`: An integer that controls the level of detail in the output.
 
-In summary, overriding _makeResult ensures that our custom result class is used to handle and format the test results.
+In summary, overriding `_makeResult` ensures that our custom result class is used to handle and format the test results.
 
-We will now be looking at the main class that is used for testing purposes, this is the [`TestDataUtils`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L38) class.
+---
+
+We will now be looking at the main class that is used for testing purposes, which is [`TestDataUtils`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L38) class.
+
+Some configuration is still required inside this class, just so we can ensure that the output is customised to our liking! 
+
+First up, we define a class method, which is indicated by `@classmethod` above the definition of the [`setUpClass`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L41) method. The function of this class method is to notify the user that the `TestDataUtils` tests are about to start, using `logger` to log the message.
+
+Proceeding this, we define the method [`setUp`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L44). This is used to 'set up' the test before it is executed. Namely, we will be logging a message which the user that the test has been started. 
+
+- On [line 45](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L45) is sets up a logger instance specifically for this test class, which can be used to output the log messages for this class. 
+- On [line 46](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L46), we log a message which indicates the start of the specific test method.
+
+Next, we define the [`tearDown`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L48) method. Similar to the `setUp` method, the `tearDown` method is executed after each test has finished. In this method, we log a message indicating the finish of the current test method.
+
+---
+
+We can now finally move onto looking at methods which will test functions in `data_utils.py`!!
+
+We will start off by looking at [`test_generate_system_triplet`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L52-L70). This test is really simple! Let me walk you through it:
+
+1. We define `list_of_valid_outputs`, which is a list that contains all the accepted outputs for the function `generate_system_triplet`.
+
+2. Then, we call the `generate_system_triplet` function, and set the variable `system_triplet` with this.
+
+3. Next, we use `logger` to log the `system_triplet` in debug mode, just so we can cross reference the output it gave to us in case of failure (this may give us an understanding to why the function we are testing is not performing correctly.)
+
+4. Finally, we use `assertIn` to see if the `system_triplet` we generated is actually in the `list_of_valid_outputs`.
+
+Up next is another easy to understand test. In the method [`test_len_generate_user_data_chunk`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L72-L76) we are simply checking that the `generate_user_data_chunk` outputs the correct number of results. This requires one line, which is:
+
+```
+assertEqual(len(generate_user_data_chunk(0,x)), x)
+```
+
+- `x` is the number of data points we expect the function to generate.
+
+- We are asserting the length of the output matches `x`. 
+
+To ensure the function behaves correctly, it's a good practice to test both small and large values for `x`:
+
+1. __Small Value__: Testing with a small value of `x` ensures that the function works as expected in straightforward cases.
+
+2. __Large Value__: Testing with a larger value of `x` checks that the function can handle a greater number of data points without performance issues or errors.
+
+This approach validates both the correctness of the output for typical cases and the function’s ability to handle larger inputs efficiently.
+
+Let us now move onto looking at the method [`test_structure_generate_user_data_chunk`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L78-L149)
+
+This method is an important once, since we wish to validate the structure of the dictionaries we generate. This ensures that they keys are indeed inside the dictionary, and the values generated are of the correct type! (We will also be checking that the country and city values are correct to the ones prescribed.)
+
+But first, it is key to note the line:
+
+```
+@patch('src.main.python.user_data_gen.data_utils.generate_system_triplet', return_value='mocked_triplet')
+```
+
+We are using the `@patch` decorator here since we wish to suppress the output of the `generate_system_triplet` function from `data_utils.py`. This is crucial since we are unit testing, where we only wish to test one function in isolation, rather than any functions that are called interally. By patching `generate_system_triplet`, we replace its actual implementation with one that is mocked, with an output as `mocked_triplet`.
+
+This ensures that the behaviour of `generate_user_data_chunk` is tested independently of the `generate_system_triplet` function. In fact, if we did not patch this function, we would actually be performing __integration testing__, where multiple componets (such as functions) are tested together.
+
+With patching aside, we can now look at the meat and bones of this method in question.
+
+On [line 81](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L81), we simply call `generate_user_data_chunk` and set it to the variable `results`, since this is the output data we wish to test.
+
+Next, we define the [`CITY_COUNTRY_MAP`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L84-L94), which is a dictionary with keys as countries and values as lists of cities corresponding to that country. This will be used when varifying the output data.
+
+Following this, we define the list [`countries`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L96) which is a list of the keys in `COUNTRY_CITY_MAP` (we do this to save on computation).
+
+Now, we will be validating the structure of the data in the list, to do this we shall start a [`for` loop using `data in result`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L98-L149). This is done to validate all dictionaries in `results`.
+
+In the [first block (lines 100-116)](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L100-116) we are validating:
+
+- that the data is indeed a dictionary using `assertIsInstance`.
+- the top level keys where we use `assertIn` to check that the keys are present in the dictionary.
+- the top level values for the keys are of correct type using `assertIsInstance`.
+
+In the [second block (lines 119-130)](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L112-L123), we first set `address = data['address']` for brevity, and then check that the:
+
+- `address` is indeed a dictionary using `assertIsInstance`.
+- keys exist using `assertIn`.
+- values for the keys are of correct type using `assertIsInstance`.
+
+In the [third block (lines 132-133)](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L132-L133) we are validating that the `country` and `city` in address are in fact in `countries` and also the correct city in `COUNTRY_CITY_MAP`.
+
+In the [fourth block (lines 136-147)](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L136-L147), similar to before, we set `device = data['device']` for brevity, and then check that the:
+
+- `device` is indeed a dictionary using `assertIsInstance`.
+- keys exist using `assertIn`.
+- values for the keys are of correct type using `assertIsInstance`.
+
+Which concludes `test_structure_generate_user_data`.
+
+Now we move on to the final method of the test class, with that being [`test_generate_user_data`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L150-L164). Unit testing `generate_user_data` is challenging due to the use of the `multiprocessing` module. To do so, we need to mock two things, `Pool` and `cpu_count` which can be seen [here](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L150-L151).
+
+We mock `Pool` because `Pool` is responsible for managing a pool of worker processes. By mocking `Pool`, we can simulate how the pool distributes tasks across processes without actually spawning multiple processes, which can be difficult to control in a test environment. This also allows us to directly control the output of `starmap`, the method used to parallelise the execution of the function.
+
+Similarly, we mock `cpu_count` to control the number of CPU cores the function thinks are available. This allows us to test how the function behaves under specific conditions (in our case, when 3 cores are available) regardless of the actual hardware the tests are running on.
+
+You may be wondering what this is:
+
+```
+mock_pool_instance = mock_pool.return_value.__enter__.return_value
+```
+
+Simply put, it is used to mock the behaviour of the `multiprocessing.Pool` object when it is used as a context manager.
+
+Let me explain what the `.__enter__` part signifies. When we enter the with block, the `__enter__` method of the context manager is called, which typically sets up the resource or environment the context manager is managing. In our case, when we use the `multiprocessing.Pool` object within a with statement, the `__enter__` method is responsible for initialising the pool of worker processes and returning the Pool instance.
+
+I will break down the logic of the code snippet above:
+
+- `mock_pool.return_value` provides a mock of the `Pool` object.
+
+- `mock_pool.return_value.__enter__` mock the `__enter__` method of the `Pool` object.
+
+- `mock_pool.return_value.__enter__.return_value` provides the mock instance that is actually used inside the `with` block, representing the `Pool` object.
+
+Most of the heavy lifting is done, but we must do one more thing to finalise this specific mock, that is use `mock_pool_instance` so we can define what happens when the `starmap` object is called. Which is done by using:
+
+```
+mock_pool_instance.starmap.return_value = [
+            [{'user_id': i} for i in range(10)],
+            [{'user_id': i} for i in range(10, 20)],
+            [{'user_id': i} for i in range(20, 25)],
+        ]
+```
+
+(This is found on [line 154-158](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L154-158))
+
+This last step ensures that when `starmap` is called on the `pool` object within the with block, it returns the predefined list, allowing the test to proceed with controlled and predictable behavior.
+
+On [lines 160-161](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L160-161) we simply state the `num_users` we wish to use, and call the function we are testing, that is `generate_user_data`. 
+
+Finally, on [lines 163-164](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/tests/unit/user_data_gen/test_data_utils.py#L163-164) we are testing that the list of lists has been flattened correctly.
+
+We have now made it to the end of the main testing class!!
+
+---
+
+Finally, to end this script off, we simply write:
+
+```
+if __name__ == '__main__':
+    unittest.main(testRunner=CustomTestRunner(verbosity=1))
+
+```
+
+Which ensures the code in the script is executed directly, and it runs all unit tests using a custom test runner that we set up earlier for a customised output.
