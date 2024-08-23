@@ -20,6 +20,8 @@
 
     - 2.1.6 [Unit Testing `data_utils.py`](#216-unit-testing-data_utilspy)
 
+    - 2.1.7 [Creating a Bash Script to Automate Unit Testing](#217-creating-a-bash-script-to-automate-unit-testing)
+
 ## 1. Introduction
 
 
@@ -27,7 +29,7 @@
 
 <ins>__Overview__</ins> :
 
-I will be generating a __JSON__ file containing random user data, this will be utilised in the source payload. I will performing unit and functional testing on the scripts, as well as profiling and analysing the profiles to understand how to improve the speed of execution.
+I will be generating a __JSON__ file containing random user data, this will be utilised in the source payload. I will performing unit and integration testing on the scripts, as well as profiling and analysing the profiles to understand how to improve the speed of execution.
 
 ### 2.1 Generating Random Data
 ------------------------------
@@ -548,7 +550,92 @@ Finally, to end this script off, we simply write:
 ```
 if __name__ == '__main__':
     unittest.main(testRunner=CustomTestRunner(verbosity=1))
-
 ```
 
 Which ensures the code in the script is executed directly, and it runs all unit tests using a custom test runner that we set up earlier for a customised output.
+
+### 2.1.7 Creating a Bash Script to Automate Unit Testing
+---------------------------------------------------------
+
+I created the bash script [`unit_test.sh`](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/scripts/user_data_gen/data_utils/unit_test.sh) to automate unit testing. The script runs the unit testing script, and stores the output in an appropriate text file.
+
+Let me walk you though the bash script!
+
+We start off by declaring: 
+
+```
+#!/bin/bash
+```
+
+Which is the shebang for bash, which tells the shell which shell language we intend to use.
+
+Next, we have the lines:
+
+```
+DATE_TIME=$(date "+%Y-%m-%d_%H-%M-%S")
+TEXT_FILE="/home/kimiko/spotify_interface_data_pipeline/artifacts/unit_testing/user_data_gen/data_utils/${DATE_TIME}-data_utils_unittest.txt"
+```
+
+Which sets the `DATE_TIME` to the current date and time, and sets the path for the `TEXT_FILE`s intended location - where we use `DATE_TIME` in the file name to signify when the test took place.
+
+Then, we state:
+
+```
+export PYTHONPATH=/home/kimiko/spotify_interface_data_pipeline
+```
+
+Which `export`s the `PYTHONPATH` environment variable. This is used to tell Python to include this directory in the search path for modules - ensuring our unit testing script can be recognised and executed.
+
+Next up, we have the following line:
+
+```
+cd /home/kimiko/spotify_interface_data_pipeline/tests/unit/user_data_gen || { echo "Failed to change directory"; exit 1; }
+```
+
+Which changes the directory to where the unit test script is located. We must bring attention to the `||` operator, it is in fact an OR operator, meaning that if the the first part fails (i.e. it cannot change to the specified directory), it executes the second part (in our case this will echo a message, telling the user that it "Failed to change directory" and then exits the shell script with an error code of `1`).
+
+Following this, we execute the unit testing script by stating:
+
+```
+python3 test_data_utils.py > "$TEXT_FILE" 2>&1
+```
+
+Here:
+
+- `python3` is the python interpreter we are using.
+
+- `test_data_utils.py` is the script with all the unit tests we wish to execute.
+
+- `> "$TEXT_FILE"` redirects the `STDOUT` of the unit testing script to be written to the specified `TEXT_FILE`, rather than being displayed in the terminal.
+
+- `2>&1` redirects `STDERR` to `STDOUT`, meaning both standard output and standard error will be combined and sent to the same destination - `TEXT_FILE`.
+
+Finally, we finish the shell script with:
+
+```
+echo "File has been created"
+```
+
+Which simply displays a message in the terminal telling the user that the text file has been created!
+
+---
+
+We are almost ready to execute the shell script. We need to give it the correct permissions to be executed, which can be done by running the following in a terminal:
+
+```
+chmod +x /path/to/unit_test.sh
+```
+
+Now, we can finally run the bash script by executing the command in the terminal:
+
+```
+/path/to/unit_test.py
+```
+
+We are greeted with a message of completion, meaning we can inspect the shell script - which can be found [here](https://github.com/kimiko-dev/Spotify-Interface-Data-Pipeline/blob/master/artifacts/unit_testing/user_data_gen/data_utils/2024-08-16_19-37-35-data_utils_unittest.txt)
+
+We can see that putting in the work to customise the output for the unit test was worthwhile, since we have a neatly formatted and detailed output! 
+
+Analysing the output for the unit test of `data_utils.py` shows us that all tests have been run without any errors, meaning the script has passed all checks.
+
+Having this shell script enhances reusability because each time the `data_utils.py` script is modified, we can simply execute the shell script from the terminal to effortlessly run the tests. Additionally, the outputs are stored in text files that are differentiated by date and time, allowing us to review historical outputs and track changes across different iterations.
